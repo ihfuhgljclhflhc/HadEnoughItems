@@ -199,22 +199,31 @@ public class RecipesGui extends GuiScreen implements IRecipesGui, IShowsRecipeFo
 			guiLeft + xSize - borderPadding - buttonWidth,
 			nextRecipeCategory.y + buttonHeight,
 			0x30000000);
-		drawRect(guiLeft + borderPadding + buttonWidth,
-			nextPage.y,
-			guiLeft + xSize - borderPadding - buttonWidth,
-			nextPage.y + buttonHeight,
-			0x30000000);
+        if (logic.hasMultiplePages()) {
+            drawRect(guiLeft + borderPadding + buttonWidth,
+                    nextPage.y,
+                    guiLeft + xSize - borderPadding - buttonWidth,
+                    nextPage.y + buttonHeight,
+                    0x30000000);
+        }
 
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
 		int textPadding = (buttonHeight - fontRenderer.FONT_HEIGHT) / 2;
-		drawCenteredString(fontRenderer, title, xSize, guiLeft, nextRecipeCategory.y + textPadding, Color.WHITE.getRGB(), true);
-		drawCenteredString(fontRenderer, pageString, xSize, guiLeft, nextPage.y + textPadding, Color.WHITE.getRGB(), true);
 
-		nextRecipeCategory.drawButton(mc, mouseX, mouseY, partialTicks);
-		previousRecipeCategory.drawButton(mc, mouseX, mouseY, partialTicks);
-		nextPage.drawButton(mc, mouseX, mouseY, partialTicks);
-		previousPage.drawButton(mc, mouseX, mouseY, partialTicks);
+        drawCenteredString(fontRenderer, title, xSize, guiLeft, nextRecipeCategory.y + textPadding, Color.WHITE.getRGB(), true);
+        if (logic.hasMultiplePages()) {
+            drawCenteredString(fontRenderer, pageString, xSize, guiLeft, nextPage.y + textPadding, Color.WHITE.getRGB(), true);
+        }
+
+        boolean showPageControls = logic.hasMultiplePages();
+        nextPage.visible = showPageControls;
+        previousPage.visible = showPageControls;
+
+        nextRecipeCategory.drawButton(mc, mouseX, mouseY, partialTicks);
+        previousRecipeCategory.drawButton(mc, mouseX, mouseY, partialTicks);
+        nextPage.drawButton(mc, mouseX, mouseY, partialTicks);
+        previousPage.drawButton(mc, mouseX, mouseY, partialTicks);
 
 		RecipeLayout hoveredLayout = null;
 		for (RecipeLayout recipeLayout : recipeLayouts) {
@@ -502,7 +511,14 @@ public class RecipesGui extends GuiScreen implements IRecipesGui, IShowsRecipeFo
 		recipeLayouts.addAll(logic.getRecipeLayouts(recipeXOffset, guiTop + headerHeight + recipeSpacing, spacingY));
 		addRecipeSpecificButtons(mc, recipeLayouts);
 
-		nextPage.enabled = previousPage.enabled = logic.hasMultiplePages();
+        boolean showPageControls = logic.hasMultiplePages();
+
+        nextPage.visible = showPageControls;
+        previousPage.visible = showPageControls;
+
+        nextPage.enabled = showPageControls;
+        previousPage.enabled = showPageControls;
+
 		nextRecipeCategory.enabled = previousRecipeCategory.enabled = logic.hasMultipleCategories();
 
 		pageString = logic.getPageString();
