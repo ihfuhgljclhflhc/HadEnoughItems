@@ -56,14 +56,22 @@ public class PageNavigation {
 		}
 	}
 
-	public boolean isMouseOver() {
-		return nextButton.isMouseOver() ||
-			backButton.isMouseOver();
-	}
+    public boolean isMouseOver() {
+        boolean multiplePages = paged.hasNext() || paged.hasPrevious();
+        if (hideOnSinglePage && !multiplePages) {
+            return false;
+        }
+        return nextButton.isMouseOver() || backButton.isMouseOver();
+    }
 
-	public boolean handleMouseClickedButtons(int mouseX, int mouseY) {
-		Minecraft minecraft = Minecraft.getMinecraft();
-		return nextButton.mousePressed(minecraft, mouseX, mouseY) ||
-			backButton.mousePressed(minecraft, mouseX, mouseY);
-	}
+    public boolean handleMouseClickedButtons(int mouseX, int mouseY) {
+        boolean multiplePages = paged.hasNext() || paged.hasPrevious();
+        if (hideOnSinglePage && !multiplePages) {
+            return false;
+        }
+
+        Minecraft minecraft = Minecraft.getMinecraft();
+        return nextButton.mousePressed(minecraft, mouseX, mouseY) ||
+                backButton.mousePressed(minecraft, mouseX, mouseY);
+    }
 }
