@@ -194,11 +194,25 @@ public class RecipesGui extends GuiScreen implements IRecipesGui, IShowsRecipeFo
 
 		GlStateManager.disableBlend();
 
-		drawRect(guiLeft + borderPadding + buttonWidth,
-			nextRecipeCategory.y,
-			guiLeft + xSize - borderPadding - buttonWidth,
-			nextRecipeCategory.y + buttonHeight,
-			0x30000000);
+        if (logic.hasMultipleCategories()) {
+            drawRect(
+                    guiLeft + borderPadding + buttonWidth,
+                    nextRecipeCategory.y,
+                    guiLeft + xSize - borderPadding - buttonWidth,
+                    nextRecipeCategory.y + buttonHeight,
+                    0x30000000
+            );
+        } else {
+
+            drawRect(
+                    guiLeft + borderPadding,
+                    nextRecipeCategory.y,
+                    guiLeft + xSize - borderPadding,
+                    nextRecipeCategory.y + buttonHeight,
+                    0x30000000
+            );
+        }
+
         if (logic.hasMultiplePages()) {
             drawRect(guiLeft + borderPadding + buttonWidth,
                     nextPage.y,
@@ -512,20 +526,23 @@ public class RecipesGui extends GuiScreen implements IRecipesGui, IShowsRecipeFo
 		addRecipeSpecificButtons(mc, recipeLayouts);
 
         boolean showPageControls = logic.hasMultiplePages();
+        boolean showCategoryControls = logic.hasMultipleCategories();
 
         nextPage.visible = showPageControls;
         previousPage.visible = showPageControls;
-
         nextPage.enabled = showPageControls;
         previousPage.enabled = showPageControls;
 
-		nextRecipeCategory.enabled = previousRecipeCategory.enabled = logic.hasMultipleCategories();
+        nextRecipeCategory.visible = showCategoryControls;
+        previousRecipeCategory.visible = showCategoryControls;
+        nextRecipeCategory.enabled = showCategoryControls;
+        previousRecipeCategory.enabled = showCategoryControls;
 
-		pageString = logic.getPageString();
+        pageString = logic.getPageString();
 
-		List<Object> recipeCatalysts = logic.getRecipeCatalysts();
-		this.recipeCatalysts.updateLayout(recipeCatalysts, this);
-		recipeGuiTabs.initLayout(this);
+        List<Object> recipeCatalysts = logic.getRecipeCatalysts();
+        this.recipeCatalysts.updateLayout(recipeCatalysts, this);
+        recipeGuiTabs.initLayout(this);
 	}
 
 	private void addRecipeSpecificButtons(Minecraft minecraft, List<RecipeLayout> recipeLayouts) {
